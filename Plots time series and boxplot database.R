@@ -1,0 +1,147 @@
+
+## Importação do banco de dados, carregamento dos pacotes e transformando a base em séries temporais ##  ##
+## Plotar time series ##
+library(ForecastTB)
+library(ggplot2)
+library(zoo)
+library(forecast)
+library(ggplot2)
+library(lmtest)
+library(urca)
+library(stats)
+library(nnfor)
+library(forecastHybrid)
+library(pastecs)
+library(forecastML)
+library(Rcpp)
+library(modeltime.ensemble)
+library(tidymodels)
+library(modeltime)
+library(timetk)   
+library(lubridate)
+library(tidyverse)
+library(modeltime.h2o)
+library(yardstick)
+library(reshape)
+library(ggplot2)
+library(timetk)
+library(plotly)
+attach(atends)
+
+## ED visits time series ## 
+
+
+data_tbl <- atends %>%
+  select(id, Date, attendences) %>%
+  set_names(c("id", "date", "value"))
+
+data_tbl
+
+data_tbl %>%
+  group_by(id) %>%
+  plot_time_series(
+    date, value, .interactive = F, .facet_ncol = 5
+  )
+
+
+##  Outra forma de visualização para plotar todas as séries
+## plot time series##
+ggplot(data = data_tbl, aes(x = Date, y = attendences, fill=id)) +
+  geom_area() + labs(x = "Daily data", y = "attendences by hospitals")               
+ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
+  geom_area() + labs(x = "Daily data", y = "attendences by hospitals")
+p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
+  geom_line() + labs(x = "Daily data", y = "attendences by hospitals")
+p + scale_fill_brewer(palette = "Set1")
+p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
+  geom_point() + labs(x = "Daily data", y = "attendences by hospitals")
+p + scale_fill_brewer(palette ="Set1")
+
+
+## selecionar a cor de cada série manualmente ##
+p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
+  geom_line() + labs(color="time series", x = "Daily data", y = "attendences by hospitals")
+p + scale_colour_manual(
+  values = c("aku" = "black", "amc" = "gold2", "antoniushove" = "gray45", "arma" ="dimgray", "bronovo"= "red", "davis" ="red1", "fre"="gray100", "fs"="red3", "joon"="red4", "kem" ="blue", "marina" ="green1", "pm"="blue2", "rg" ="blue3", "rph" ="blue4", "scg"="tan", "sjgm" ="tan1", "swan" ="tan2", "westeinde" ="tan3", "hcpa" ="tan4", "Iowa"="pink"))
+
+
+## plot time series melhor forma de plotar##
+
+data_tbl %>%
+  plot_time_series(Date, attendences, .color_var = id, .smooth = F, .y_lab ="attendences by hospitals", .x_lab = "Daily data", .title = "")
+
+data_tbl %>%
+  plot_time_series(Date, attendences, .color_var = id, .interactive = F, .smooth = F, .y_lab ="attendences by hospitals",  .x_lab = "Daily data", .title = "") 
+
+
+data_tbl %>%
+  plot_time_series(Date, attendences, .color_var = id, .interactive = F, .smooth = F, .y_lab ="attendences by hospitals",  .x_lab = "Daily data", .title = "", .line_size = 0.8) 
+
+## Boxplot time series##
+ggplot(data = data_tbl, aes(x = Date, y = attendences, fill=id)) +
+  geom_boxplot() + labs(x = "Daily data", y = "attendences by hospitals")                
+
+ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
+  geom_boxplot() + labs(color="time series", x = "Daily data", y = "attendences by hospitals")                
+
+## inserir os nomes das séries no eixo X ##
+ggplot(data = data_tbl, aes(x = id, y = attendences, fill=id)) +
+  geom_boxplot() + labs(fill="time series", x = "Daily data", y = "attendences by hospitals")                
+
+ggplot(data = data_tbl, aes(x = id, y = attendences, color=id)) +
+  geom_boxplot() + labs(color="time series", x = "Daily data", y = "attendences by hospitals")                
+
+# This toggles plots from plotly (interactive) to ggplot (static)
+interactive <- FALSE
+
+
+# Let's do a quick seasonality evaluation to hone in on important features using plot_seasonal_diagnostics().
+data_tbl <- atends_temperature_calendar %>%
+  select(id, Date, attendences) %>%
+  set_names(c("id", "date", "value"))
+data_tbl
+
+
+## This worked for me with a windows 10 laptop in German, where I wanted i.e. lubridate to return dates in English:
+Sys.setlocale("LC_TIME", "English")
+
+# Visualize seasonality box plot -----
+data_tbl %>%
+  plot_seasonal_diagnostics(
+    date, value, 
+    .feature_set = c("wday.lbl", "month.lbl"),
+    .interactive = FALSE, .title = ""
+  )
+
+
+# Visualize seasonality box plot test in id time series -----
+data_tbl %>% filter(id == "antoniushove") %>%
+  plot_seasonal_diagnostics(
+    date, value, 
+    .feature_set = c("wday.lbl", "month.lbl"),
+    .interactive = FALSE, .title = "ANTONIUSHOVE"
+  )
+
+
+
+
+
+
+data_tbl %>%
+  plot_seasonal_diagnostics(
+    date, value,
+    .feature_set = c("week", "quarter"),
+    .interactive = FALSE
+  )
+
+# Visualize seasonality group
+data_tbl %>%
+  group_by(id) %>%
+  plot_seasonal_diagnostics(date, value, .interactive = FALSE)
+
+
+## Estatisticas descritivas das 20 séries temporais
+library(pastecs)
+attach(data_vitsits_global_estatisticas_descritivas)
+summary(data_vitsits_global_estatisticas_descritivas)
+stat.desc(data_vitsits_global_estatisticas_descritivas)
