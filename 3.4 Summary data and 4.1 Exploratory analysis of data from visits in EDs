@@ -45,12 +45,12 @@ data_tbl %>%
     date, value, .interactive = F, .facet_ncol = 5
   )
 
-# To plot and view the time series chart (Figure 1) of the article #
+# To plot and view the time series chart (Figure 2) of the article #
 
 data_tbl %>%
   plot_time_series(Date, attendences, .color_var = id, .interactive = F, .smooth = F, .y_lab ="attendences by hospitals",  .x_lab = "Daily data", .title = "") 
 
-# interactive graph #
+# Interactive graph. This toggles plots from plotly (interactive) to ggplot (static) .interactive = F #
 data_tbl %>%
   plot_time_series(Date, attendences, .color_var = id, .smooth = F, .y_lab ="attendences by hospitals", .x_lab = "Daily data", .title = "")
 
@@ -61,22 +61,8 @@ p + scale_fill_brewer(palette = "Set1")
 
 # Plotting the twenty emergencies data in boxplots charts (Figure 1) #
 
-ggplot(data = data_tbl, aes(x = Date, y = attendences, fill=id)) +
-  geom_boxplot() + labs(x = "Daily data", y = "attendences by hospitals")                
-
-ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
-  geom_boxplot() + labs(color="time series", x = "Daily data", y = "attendences by hospitals")                
-
-## inserir os nomes das séries no eixo X ##
 ggplot(data = data_tbl, aes(x = id, y = attendences, fill=id)) +
   geom_boxplot() + labs(fill="time series", x = "Daily data", y = "attendences by hospitals")                
-
-ggplot(data = data_tbl, aes(x = id, y = attendences, color=id)) +
-  geom_boxplot() + labs(color="time series", x = "Daily data", y = "attendences by hospitals")                
-
-# This toggles plots from plotly (interactive) to ggplot (static)
-interactive <- FALSE
-
 
 # Let's do a quick seasonality evaluation to hone in on important features using plot_seasonal_diagnostics().
 data_tbl <- atends_temperature_calendar %>%
