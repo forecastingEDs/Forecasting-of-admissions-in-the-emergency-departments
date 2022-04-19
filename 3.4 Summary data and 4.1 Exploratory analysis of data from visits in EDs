@@ -26,15 +26,14 @@ library(reshape)
 library(ggplot2)
 library(timetk)
 library(plotly)
-attach(atends)
 
-## ED visits time series ## 
+after loading the packages, you must import the data into R, keeping the original excel filename "atends_temperature_calendar"
 
 ## attach to know the variables
-attach(atends)
+attach(atends_temperature_calendar)
 
-
-data_tbl <- atends %>%
+# Plotting the data from the twenty emergencies on time series graphs #
+data_tbl <- atends_temperature_calendar %>%
   select(id, Date, attendences) %>%
   set_names(c("id", "date", "value"))
 
@@ -45,6 +44,8 @@ data_tbl %>%
   plot_time_series(
     date, value, .interactive = F, .facet_ncol = 5
   )
+
+
 
 
 ##  Outra forma de visualização para plotar todas as séries
