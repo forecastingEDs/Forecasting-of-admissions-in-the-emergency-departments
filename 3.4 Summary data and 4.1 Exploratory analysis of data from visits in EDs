@@ -64,17 +64,19 @@ p + scale_fill_brewer(palette = "Set1")
 ggplot(data = data_tbl, aes(x = id, y = attendences, fill=id)) +
   geom_boxplot() + labs(fill="time series", x = "Daily data", y = "attendences by hospitals")                
 
-# Let's do a quick seasonality evaluation to hone in on important features using plot_seasonal_diagnostics().
+# The seasonality evaluation (Figure 3) of the data showing the data behavior using the plot_seasonal_diagnostics() function. #
+
 data_tbl <- atends_temperature_calendar %>%
   select(id, Date, attendences) %>%
   set_names(c("id", "date", "value"))
 data_tbl
 
-
-## This worked for me with a windows 10 laptop in German, where I wanted i.e. lubridate to return dates in English:
+## This worked for me with a windows 10 laptop in Portuguese, where I wanted i.e. lubridate to return dates in English:
 Sys.setlocale("LC_TIME", "English")
 
-# Visualize seasonality box plot -----
+
+# View the seasonality box plot for the twenty EDs (All patient arrivals from the twenty emergencies in a single boxplot) #
+
 data_tbl %>%
   plot_seasonal_diagnostics(
     date, value, 
