@@ -74,7 +74,6 @@ data_tbl
 ## This worked for me with a windows 10 laptop in Portuguese, where I wanted i.e. lubridate to return dates in English:
 Sys.setlocale("LC_TIME", "English")
 
-
 # View the seasonality box plot for the twenty EDs (All patient arrivals from the twenty emergencies in a single boxplot) #
 
 data_tbl %>%
@@ -83,21 +82,8 @@ data_tbl %>%
     .feature_set = c("wday.lbl", "month.lbl"),
     .interactive = FALSE, .title = ""
   )
-
-
-# Visualize seasonality box plot test in id time series -----
-data_tbl %>% filter(id == "antoniushove") %>%
-  plot_seasonal_diagnostics(
-    date, value, 
-    .feature_set = c("wday.lbl", "month.lbl"),
-    .interactive = FALSE, .title = "ANTONIUSHOVE"
-  )
-
-
-
-
-
-
+  
+# To change how often data is displayed in the boxplot #  
 data_tbl %>%
   plot_seasonal_diagnostics(
     date, value,
@@ -105,14 +91,12 @@ data_tbl %>%
     .interactive = FALSE
   )
 
-# Visualize seasonality group
-data_tbl %>%
-  group_by(id) %>%
-  plot_seasonal_diagnostics(date, value, .interactive = FALSE)
+# View the seasonality box plots for each of the twenty emergencies, to get the twenty plots you must change the name of the variable in id == "antoniushove",
+for example changing to "amc" will generate a new boxplot plot of the emergency amc. #
 
-
-## Estatisticas descritivas das 20 séries temporais
-library(pastecs)
-attach(data_vitsits_global_estatisticas_descritivas)
-summary(data_vitsits_global_estatisticas_descritivas)
-stat.desc(data_vitsits_global_estatisticas_descritivas)
+data_tbl %>% filter(id == "antoniushove") %>%
+  plot_seasonal_diagnostics(
+    date, value, 
+    .feature_set = c("wday.lbl", "month.lbl"),
+    .interactive = FALSE, .title = "ANTONIUSHOVE"
+  )
