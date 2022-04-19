@@ -27,7 +27,7 @@ library(ggplot2)
 library(timetk)
 library(plotly)
 
-after loading the packages, you must import the data into R, keeping the original excel filename "atends_temperature_calendar"
+# after loading the packages, you must import the data into R, keeping the original excel filename "atends_temperature_calendar" #
 
 ## attach to know the variables
 attach(atends_temperature_calendar)
@@ -45,28 +45,24 @@ data_tbl %>%
     date, value, .interactive = F, .facet_ncol = 5
   )
 
+# To plot and view the time series chart (Figure 1) of the article #
 
+data_tbl %>%
+  plot_time_series(Date, attendences, .color_var = id, .interactive = F, .smooth = F, .y_lab ="attendences by hospitals",  .x_lab = "Daily data", .title = "") 
 
+data_tbl %>%
+  plot_time_series(Date, attendences, .color_var = id, .interactive = F, .smooth = F, .y_lab ="attendences by hospitals",  .x_lab = "Daily data", .title = "", .line_size = 0.8) 
 
-##  Outra forma de visualização para plotar todas as séries
-## plot time series#
-ggplot(data = data_tbl, aes(x = Date, y = attendences, fill=id)) +
-  geom_area() + labs(x = "Daily data", y = "attendences by hospitals")               
-ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
-  geom_area() + labs(x = "Daily data", y = "attendences by hospitals")
+# interactive graph #
+data_tbl %>%
+  plot_time_series(Date, attendences, .color_var = id, .smooth = F, .y_lab ="attendences by hospitals", .x_lab = "Daily data", .title = "")
+
 p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
   geom_line() + labs(x = "Daily data", y = "attendences by hospitals")
 p + scale_fill_brewer(palette = "Set1")
-p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
-  geom_point() + labs(x = "Daily data", y = "attendences by hospitals")
-p + scale_fill_brewer(palette ="Set1")
 
 
-## selecionar a cor de cada série manualmente ##
-p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
-  geom_line() + labs(color="time series", x = "Daily data", y = "attendences by hospitals")
-p + scale_colour_manual(
-  values = c("aku" = "black", "amc" = "gold2", "antoniushove" = "gray45", "arma" ="dimgray", "bronovo"= "red", "davis" ="red1", "fre"="gray100", "fs"="red3", "joon"="red4", "kem" ="blue", "marina" ="green1", "pm"="blue2", "rg" ="blue3", "rph" ="blue4", "scg"="tan", "sjgm" ="tan1", "swan" ="tan2", "westeinde" ="tan3", "hcpa" ="tan4", "Iowa"="pink"))
+
 
 
 ## plot time series melhor forma de plotar##
