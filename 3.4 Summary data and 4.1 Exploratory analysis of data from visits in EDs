@@ -1,6 +1,6 @@
 
-## Importação do banco de dados, carregamento dos pacotes e transformando a base em séries temporais ##  ##
-## Plotar time series ##
+# Importing the database, loading the packages and plotting the data in time series and boxplot plots #
+
 library(ForecastTB)
 library(ggplot2)
 library(zoo)
@@ -44,8 +44,8 @@ data_tbl %>%
   )
 
 
-##  Outra forma de visualização para plotar todas as séries
-## plot time series##
+##  Outra forma de visualizaÃ§Ã£o para plotar todas as sÃ©ries
+## plot time series#
 ggplot(data = data_tbl, aes(x = Date, y = attendences, fill=id)) +
   geom_area() + labs(x = "Daily data", y = "attendences by hospitals")               
 ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
@@ -58,7 +58,7 @@ p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
 p + scale_fill_brewer(palette ="Set1")
 
 
-## selecionar a cor de cada série manualmente ##
+## selecionar a cor de cada sÃ©rie manualmente ##
 p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
   geom_line() + labs(color="time series", x = "Daily data", y = "attendences by hospitals")
 p + scale_colour_manual(
@@ -84,7 +84,7 @@ ggplot(data = data_tbl, aes(x = Date, y = attendences, fill=id)) +
 ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
   geom_boxplot() + labs(color="time series", x = "Daily data", y = "attendences by hospitals")                
 
-## inserir os nomes das séries no eixo X ##
+## inserir os nomes das sÃ©ries no eixo X ##
 ggplot(data = data_tbl, aes(x = id, y = attendences, fill=id)) +
   geom_boxplot() + labs(fill="time series", x = "Daily data", y = "attendences by hospitals")                
 
@@ -140,7 +140,7 @@ data_tbl %>%
   plot_seasonal_diagnostics(date, value, .interactive = FALSE)
 
 
-## Estatisticas descritivas das 20 séries temporais
+## Estatisticas descritivas das 20 sÃ©ries temporais
 library(pastecs)
 attach(data_vitsits_global_estatisticas_descritivas)
 summary(data_vitsits_global_estatisticas_descritivas)
