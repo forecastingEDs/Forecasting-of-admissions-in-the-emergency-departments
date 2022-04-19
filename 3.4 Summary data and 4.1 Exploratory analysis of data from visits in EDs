@@ -50,9 +50,6 @@ data_tbl %>%
 data_tbl %>%
   plot_time_series(Date, attendences, .color_var = id, .interactive = F, .smooth = F, .y_lab ="attendences by hospitals",  .x_lab = "Daily data", .title = "") 
 
-data_tbl %>%
-  plot_time_series(Date, attendences, .color_var = id, .interactive = F, .smooth = F, .y_lab ="attendences by hospitals",  .x_lab = "Daily data", .title = "", .line_size = 0.8) 
-
 # interactive graph #
 data_tbl %>%
   plot_time_series(Date, attendences, .color_var = id, .smooth = F, .y_lab ="attendences by hospitals", .x_lab = "Daily data", .title = "")
@@ -62,22 +59,8 @@ p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
 p + scale_fill_brewer(palette = "Set1")
 
 
+# Plotting the twenty emergencies data in boxplots charts (Figure 1) #
 
-
-
-## plot time series melhor forma de plotar##
-
-data_tbl %>%
-  plot_time_series(Date, attendences, .color_var = id, .smooth = F, .y_lab ="attendences by hospitals", .x_lab = "Daily data", .title = "")
-
-data_tbl %>%
-  plot_time_series(Date, attendences, .color_var = id, .interactive = F, .smooth = F, .y_lab ="attendences by hospitals",  .x_lab = "Daily data", .title = "") 
-
-
-data_tbl %>%
-  plot_time_series(Date, attendences, .color_var = id, .interactive = F, .smooth = F, .y_lab ="attendences by hospitals",  .x_lab = "Daily data", .title = "", .line_size = 0.8) 
-
-## Boxplot time series##
 ggplot(data = data_tbl, aes(x = Date, y = attendences, fill=id)) +
   geom_boxplot() + labs(x = "Daily data", y = "attendences by hospitals")                
 
