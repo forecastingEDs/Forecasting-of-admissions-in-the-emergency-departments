@@ -30,6 +30,9 @@ attach(atends)
 
 ## ED visits time series ## 
 
+## attach to know the variables
+attach(atends)
+
 
 data_tbl <- atends %>%
   select(id, Date, attendences) %>%
