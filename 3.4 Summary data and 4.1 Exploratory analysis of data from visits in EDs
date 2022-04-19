@@ -1,4 +1,3 @@
-
 # Importing the database, loading the packages and plotting the data in time series and boxplot plots #
 
 library(ForecastTB)
@@ -57,7 +56,6 @@ data_tbl %>%
 p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
   geom_line() + labs(x = "Daily data", y = "attendences by hospitals")
 p + scale_fill_brewer(palette = "Set1")
-
 
 # Plotting the twenty emergencies data in boxplots charts (Figure 1) #
 
