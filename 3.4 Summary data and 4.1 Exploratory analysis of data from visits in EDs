@@ -57,6 +57,11 @@ p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
   geom_line() + labs(x = "Daily data", y = "attendences by hospitals")
 p + scale_fill_brewer(palette = "Set1")
 
+p <- ggplot(data = data_tbl, aes(x = Date, y = attendences, color=id)) +
+  geom_line() + scale_x_datetime(date_breaks = "1 year", date_labels = "%b %Y") + theme_minimal() + labs(color="EDs", x = "Daily data", y = "attendences by hospitals")
+p + scale_colour_manual(
+  values = c("aku" = "black", "amc" = "gold2", "antoniushove" = "gray45", "arma" ="dimgray", "bronovo"= "red", "davis" ="red1", "fre"="gray100", "fs"="red3", "joon"="red4", "kem" ="blue", "marina" ="green1", "pm"="blue2", "rg" ="blue3", "rph" ="blue4", "scg"="tan", "sjgm" ="tan1", "swan" ="tan2", "westeinde" ="tan3", "hcpa" ="tan4", "Iowa"="pink"))
+
 # Plotting the twenty emergencies data in boxplots charts (Figure 1) #
 
 ggplot(data = data_tbl, aes(x = id, y = attendences, fill=id)) +
