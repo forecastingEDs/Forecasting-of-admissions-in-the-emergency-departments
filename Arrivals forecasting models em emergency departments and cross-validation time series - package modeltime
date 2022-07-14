@@ -345,8 +345,3 @@ resample_results %>%
 resample_results %>%
   modeltime_resample_accuracy(summary_fns = mean, yardstick::metric_set(mape, smape, mase, rmse)) %>%
   table_modeltime_accuracy()
-
-
-
-
-
