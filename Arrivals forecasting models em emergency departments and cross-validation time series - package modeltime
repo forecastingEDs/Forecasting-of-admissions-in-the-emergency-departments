@@ -66,6 +66,7 @@ library(kknn)
 library(readxl)
 library(skimr) 
 
+## Load Data ----
 # In this step you must import the data from the Excel spreadsheet to Rstudio keeping the original file name "atends_temperature_calendar" so that the next steps work correctly.
 With Rstudio open, in the upper right corner you have the option/tab >import Dataset>from excel>Browse and select the "atends_temperature_calendar"
 
@@ -248,8 +249,8 @@ wflw_fit_stlm_ets <- workflow() %>%
   add_recipe(recipe_spec) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
-
 # Statistical models ----
+
 # Model 7: ets ----
 wflw_fit_ets <- workflow() %>% 
   add_model(
@@ -302,7 +303,6 @@ resample_results <- model_tbl %>%
     control   = control_resamples(allow_par = TRUE, verbose = TRUE)
   )
 
-
 resample_results
 
 
@@ -316,7 +316,6 @@ resample_results %>%
                            .title =  "",
                            .color_lab =  "Models"
   )
-
 
 resample_results %>%
   plot_modeltime_resamples(yardstick::metric_set(mape, smape, mase, rmse),
