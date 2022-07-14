@@ -70,7 +70,7 @@ library(skimr)
 # In this step you must import the data from the Excel spreadsheet to Rstudio keeping the original file name "atends_temperature_calendar" so that the next steps work correctly.
 With Rstudio open, in the upper right corner you have the option/tab >import Dataset>from excel>Browse and select the "atends_temperature_calendar"
 
-
+# step 4
 # Cross-validated forecasting using calendar variables.
 
 data_tbl <- atends_temperature_calendar %>%
@@ -103,6 +103,7 @@ data_prepared_tbl <- full_data_tbl %>%
 future_tbl <- full_data_tbl %>%
   filter(is.na(value))
 
+# step 4
 # Cross-validation forecasting using temperature variables
 
 data_tbl <- atends_temperature_calendar %>%
@@ -144,6 +145,7 @@ data_prepared_tbl %>%
   group_by(id) %>%
   tk_summary_diagnostics()
 
+# step 5
 ## Data Splitting ----
 
 ## Now we set aside the future data (we would only need that later when we make forecast)
@@ -183,6 +185,7 @@ summary(prep(recipe_spec))
 recipe_spec %>% prep() %>% juice() %>% glimpse()
 recipe_spec %>% prep() %>% juice()
 
+# step 6
 ## Training of the nine forecast models ----
 
 # Machine learning models
@@ -276,6 +279,7 @@ wflw_fit_SNAIVE <- workflow() %>%
   add_recipe(recipe_spec) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
+# step 7
 # Create Modeltime Table ----
 ## The Modeltime Table organizes the models with IDs and creates generic descriptions to help us keep track of our models. 
 ## Let's add the models to a modeltime_table()
@@ -295,6 +299,7 @@ model_tbl <- modeltime_table(
 
 model_tbl
 
+# step 8
 # Time series cross-validation ---- 3.4 Cross-Validation in Time Series of visits in EDs
 
 resample_results <- model_tbl %>%
