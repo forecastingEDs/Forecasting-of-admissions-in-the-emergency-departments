@@ -1,6 +1,5 @@
 
 
-
 # To use the modeltime package in Rstudio it is necessary to load some Python functions (we use Rstudio loading some functions that are from Python). Run step 1.
 # step 1
 if (!requireNamespace("BiocManager", quietly = TRUE))
