@@ -1,2 +1,2 @@
-# Forecasting-of-admissions-in-the-emergency-departments
+Forecasting daily patient arrivals at emergency departments: a comparison between models using variables calendar and meteorological
 Script for replicating study analyzes
