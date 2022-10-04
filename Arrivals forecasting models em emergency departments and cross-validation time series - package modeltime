@@ -1,7 +1,7 @@
 
 
-# To use the modeltime package in Rstudio it is necessary to load some Python functions (we use Rstudio loading some functions that are from Python). Run step 1.
-# step 1
+### To use the modeltime package in Rstudio it is necessary to load some Python functions (we use Rstudio loading some functions that are from Python). Run step 1.
+### step 1
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 remove.packages("modeltime", lib="~/R/win-library/4.1") # remove the package, if installed.
@@ -9,9 +9,9 @@ install.packages("modeltime", dependencies = TRUE)
 remotes::install_github("business-science/modeltime", dependencies = TRUE)
 # Enter one or more numbers, or an empty line to skip updates: 2 # select option 2: CRAN packages only #
 
-# This step serves to allocate all the notebook/computer's RAM memory to Rstudio, this allows notebooks with little RAM to be able to run the scripts of the next steps.
-# step 2
-# This has worked for me with my 16 RAM, 64Bit Window 11 ----
+### This step serves to allocate all the notebook/computer's RAM memory to Rstudio, this allows notebooks with little RAM to be able to run the scripts of the next steps.
+### step 2
+### This has worked for me with my 16 RAM, 64Bit Window 11 ----
 if(.Platform$OS.type == "windows") withAutoprint({
   memory.size() ### Checking your memory size
   memory.size(TRUE)
@@ -19,8 +19,8 @@ if(.Platform$OS.type == "windows") withAutoprint({
 })
   memory.limit(size=56000) ### expanding your memory _ here it goes beyond to your actually memory. This 56000 is proposed for 64Bit.
 
-# step 3
-# Install and load the following R packages ----
+### step 3
+### Install and load the following R packages ----
   
 library(keras) 
 library(ForecastTB) 
@@ -65,24 +65,24 @@ library(kknn)
 library(readxl)
 library(skimr) 
 
-## Load Data ----
-# In this step you must import the data from the Excel spreadsheet to Rstudio keeping the original file name "atends_temperature_calendar" so that the next steps work correctly.
+### Load Data ----
+### In this step you must import the data from the Excel spreadsheet to Rstudio keeping the original file name "atends_temperature_calendar" so that the next steps work correctly.
 With Rstudio open, in the upper right corner you have the option/tab >import Dataset>from excel>Browse and select the "atends_temperature_calendar"
 
-# step 4
-# Cross-validated forecasting using calendar variables.
+### step 4
+### Cross-validated forecasting using calendar variables.
 
 data_tbl <- atends_temperature_calendar %>%
   select(id, Date, attendences, sunday, monday, tuesday, wednesday, thursday, friday, saturday) %>%
   set_names(c("id", "date", "value","sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"))
 data_tbl
 
-# Full = Training + Forecast Datasets
+### Full = Training + Forecast Datasets
 full_data_tbl <- atends_temperature_calendar %>%
   select(id, Date, attendences, sunday, monday, tuesday, wednesday, thursday, friday, saturday) %>%
   set_names(c("id", "date", "value","sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday")) %>%
   
-  # Apply Group-wise Time Series Manipulations
+ ### Apply Group-wise Time Series Manipulations
   group_by(id) %>%
   future_frame(
     .date_var   = date,
@@ -91,19 +91,19 @@ full_data_tbl <- atends_temperature_calendar %>%
   ) %>%
   ungroup() %>%
   
-  # Consolidate IDs
+ ### Consolidate IDs
   mutate(id = fct_drop(id))
 
-# Training Data
+### Training Data
 data_prepared_tbl <- full_data_tbl %>%
   filter(!is.na(value))
 
-# Forecast Data
+### Forecast Data
 future_tbl <- full_data_tbl %>%
   filter(is.na(value))
 
-# step 4
-# Cross-validation forecasting using temperature variables
+### step 4
+### Cross-validation forecasting using temperature variables
 
 data_tbl <- atends_temperature_calendar %>%
   select(id, Date, attendences, average_temperature, min, max) %>%
@@ -111,12 +111,12 @@ data_tbl <- atends_temperature_calendar %>%
 data_tbl
 
 
-# Full = Training + Forecast Datasets
+### Full = Training + Forecast Datasets
 full_data_tbl <- atends_temperature_calendar %>%
   select(id, Date, attendences, average_temperature, min, max) %>%
   set_names(c("id", "date", "value","temperature", "tempemin", "tempemax")) %>%
   
-  # Apply Group-wise Time Series Manipulations
+  ### Apply Group-wise Time Series Manipulations
   group_by(id) %>%
   future_frame(
     .date_var   = date,
@@ -125,32 +125,32 @@ full_data_tbl <- atends_temperature_calendar %>%
   ) %>%
   ungroup() %>%
   
-  # Consolidate IDs
+  ### Consolidate IDs
   mutate(id = fct_drop(id))
 
-# Training Data
+### Training Data
 data_prepared_tbl <- full_data_tbl %>%
   filter(!is.na(value))
 
-# Forecast Data
+### Forecast Data
 future_tbl <- full_data_tbl %>%
   filter(is.na(value))
 
 data_prepared_tbl %>% glimpse()
     
-# Summary Diagnostics. Let us check the regularity of all time series with timetk::tk_summary_diagnostics()
-# Check for summary of timeseries data for training set
+### Summary Diagnostics. Let us check the regularity of all time series with timetk::tk_summary_diagnostics()
+### Check for summary of timeseries data for training set
 data_prepared_tbl %>%
   group_by(id) %>%
   tk_summary_diagnostics()
 
-# step 5
-## Data Splitting ----
+### step 5
+### Data Splitting ----
 
-## Now we set aside the future data (we would only need that later when we make forecast)
-## And focus on training data
-## * 4.1 Panel Data Splitting ----
-## Split the dataset into analyis/assessment set
+### Now we set aside the future data (we would only need that later when we make forecast)
+### And focus on training data
+### * 4.1 Panel Data Splitting ----
+### Split the dataset into analyis/assessment set
 
 emergency_tscv <- data_prepared_tbl %>%
   time_series_cv(
@@ -180,47 +180,47 @@ recipe_spec
 
 summary(prep(recipe_spec))
 
-# Now a "DESIGN MATRIX" is made
+### Now a "DESIGN MATRIX" is made
 recipe_spec %>% prep() %>% juice() %>% glimpse()
 recipe_spec %>% prep() %>% juice()
 
-# step 6
-## Training of the nine forecast models ----
+### step 6
+### Training of the nine forecast models ----
 
-# Machine learning models
-#> Radial Basis Function Support Vector Machine
-# Model 1: SVM_rbf ----
+### Machine learning models
+###> Radial Basis Function Support Vector Machine
+### Model 1: SVM_rbf ----
 wflw_fit_svm_rbf <- workflow() %>%
   add_model(
-    svm_rbf() %>% set_engine("kernlab") 
+    svm_rbf("regression") %>% set_engine("kernlab") 
   ) %>%
   add_recipe(recipe_spec %>% step_rm(date)) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
-# Model 2: Xgboost ----
+### Model 2: Xgboost ----
 wflw_fit_xgboost <- workflow() %>%
   add_model(
-    boost_tree() %>% set_engine("xgboost") 
+    boost_tree("regression") %>% set_engine("xgboost") 
   ) %>%
   add_recipe(recipe_spec %>% step_rm(date)) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
-# View the model training workflow from the resulting predictors #
+### View the model training workflow from the resulting predictors #
 wflw_fit_xgboost
 wflw_fit_xgboost %>% 
   extract_fit_parsnip()
 wflw_fit_xgboost %>% 
   extract_recipe()
 
-# Model 3: Random Forest ----
+### Model 3: Random Forest ----
 wflw_fit_rf <- workflow() %>%
   add_model(
-    rand_forest(trees = 500, min_n = 50) %>% set_engine("randomForest")
+    rand_forest("regression", trees = 500, min_n = 50) %>% set_engine("randomForest")
   ) %>%
   add_recipe(recipe_spec %>% step_rm(date)) %>% # Add preprocessing steps (Note that "date" column is removed since Machine Learning algorithms don't typically know how to deal with date or date-time features)
   fit(training(emergency_tscv$splits[[1]]))
 
-# Model 4: ANN ---- 
+### Model 4: ANN ---- 
 wflw_fit_ANN <- workflow() %>% 
   add_model(
     nnetar_reg() %>%
@@ -228,12 +228,12 @@ wflw_fit_ANN <- workflow() %>%
   add_recipe(recipe_spec) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
-# Hybrid Models ----
-# The Prophet Boost algorithm combines Prophet with XGBoost to get the best of both worlds (i.e. Prophet Automation + Machine Learning). 
-# Model 5: Prophet_boost ----
+### Hybrid Models ----
+### The Prophet Boost algorithm combines Prophet with XGBoost to get the best of both worlds (i.e. Prophet Automation + Machine Learning). 
+### Model 5: Prophet_boost ----
 wflw_fit_prophet_boost <- workflow() %>%
   add_model(
-    prophet_boost(
+    prophet_boost("regression",
       seasonality_daily  = FALSE, 
       seasonality_weekly = FALSE,
       seasonality_yearly = FALSE
@@ -243,7 +243,7 @@ wflw_fit_prophet_boost <- workflow() %>%
   add_recipe(recipe_spec) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
-#  Model 6: STLM-ETS ----
+###  Model 6: STLM-ETS ----
 wflw_fit_stlm_ets <- workflow() %>%
   add_model(seasonal_reg() %>%
               set_engine(engine = "stlm_ets")
@@ -251,9 +251,9 @@ wflw_fit_stlm_ets <- workflow() %>%
   add_recipe(recipe_spec) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
-# Statistical models ----
+### Statistical models ----
 
-# Model 7: ets ----
+### Model 7: ets ----
 wflw_fit_ets <- workflow() %>% 
   add_model(
     exp_smoothing() %>%
@@ -261,8 +261,8 @@ wflw_fit_ets <- workflow() %>%
   add_recipe(recipe_spec) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
-# ---- NAIVE ----
-# Model 8: Naive ----
+### ---- NAIVE ----
+### Model 8: Naive ----
 wflw_fit_naive <- workflow() %>% 
   add_model(
     naive_reg() %>%
@@ -270,7 +270,7 @@ wflw_fit_naive <- workflow() %>%
   add_recipe(recipe_spec) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
-# Model 9: sNaive ----
+### Model 9: sNaive ----
 wflw_fit_SNAIVE <- workflow() %>% 
   add_model(
     naive_reg() %>%
@@ -278,11 +278,11 @@ wflw_fit_SNAIVE <- workflow() %>%
   add_recipe(recipe_spec) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
-# step 7
-# Create Modeltime Table ----
-## The Modeltime Table organizes the models with IDs and creates generic descriptions to help us keep track of our models. 
-## Let's add the models to a modeltime_table()
-# table modeltime ----
+### step 7
+### Create Modeltime Table ----
+### The Modeltime Table organizes the models with IDs and creates generic descriptions to help us keep track of our models. 
+### Let's add the models to a modeltime_table()
+### table modeltime ----
 
 model_tbl <- modeltime_table(
   wflw_fit_xgboost,
@@ -298,8 +298,8 @@ model_tbl <- modeltime_table(
 
 model_tbl
 
-# step 8
-# Time series cross-validation ---- 3.4 Cross-Validation in Time Series of visits in EDs
+### step 8
+### Time series cross-validation ---- 3.4 Cross-Validation in Time Series of visits in EDs
 
 resample_results <- model_tbl %>%
   modeltime_fit_resamples(
@@ -310,7 +310,7 @@ resample_results <- model_tbl %>%
 resample_results
 
 
-# Results ----
+### Results ----
 resample_results %>%
   plot_modeltime_resamples(yardstick::metric_set(mape, smape, mase, rmse),
                            .point_size  = 4,
@@ -334,8 +334,8 @@ resample_results %>%
   modeltime_resample_accuracy(summary_fns = mean, yardstick::metric_set(mape, smape, mase, rmse)) %>%
   table_modeltime_accuracy(.interactive = FALSE)
 
-# Resample Accuracy Table
-# We can get an interactive or static table using modeltime_resample_accuracy(). I'm interested not only in the average metric value but also in the variability (standard deviation). I can get both of these by adding multiple summary functions using a list().
+### Resample Accuracy Table
+### We can get an interactive or static table using modeltime_resample_accuracy(). I'm interested not only in the average metric value but also in the variability (standard deviation). I can get both of these by adding multiple summary functions using a list().
 
 resample_results %>%
   modeltime_resample_accuracy(summary_fns = list(mean = mean, sd = sd), yardstick::metric_set(mape, smape, mase, rmse)) %>%
