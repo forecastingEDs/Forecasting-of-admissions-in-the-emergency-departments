@@ -68,57 +68,24 @@ library(skimr)
 With Rstudio open, in the upper right corner you have the option/tab >import Dataset>from excel>Browse and select the "atends_temperature_calendar"
 
 ### step 4
-### Cross-validated forecasting using calendar variables.
+### Cross validated forecasting using calendar and meteorologists variables ----
 
 data_tbl <- atends_temperature_calendar %>%
-  select(id, Date, attendences, sunday, monday, tuesday, wednesday, thursday, friday, saturday) %>%
-  set_names(c("id", "date", "value","sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"))
+  select(id, Date, attendences, average_temperature, min, max, monthday,  sunday, monday, tuesday, wednesday, thursday, friday, saturday, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec) %>%
+  set_names(c("id", "date", "value","temperature", "tempemin", "tempemax", "monthday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
 data_tbl
 
-### Full = Training + Forecast Datasets
+# Full = Training + Forecast Datasets
 full_data_tbl <- atends_temperature_calendar %>%
-  select(id, Date, attendences, sunday, monday, tuesday, wednesday, thursday, friday, saturday) %>%
-  set_names(c("id", "date", "value","sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday")) %>%
+  select(id, Date, attendences, average_temperature, min, max, monthday,  sunday, monday, tuesday, wednesday, thursday, friday, saturday, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec) %>%
+  set_names(c("id", "date", "value","temperature", "tempemin", "tempemax", "monthday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) %>%
   
-  ### Apply Group-wise Time Series Manipulations
+### Apply Group-wise Time Series Manipulations
   group_by(id) %>%
   future_frame(
     .date_var   = date,
     .length_out = "7 days", # To change the forecast horizon and redo the forecasts at a new horizon, you must change to 3 or 30 days ahead the value in that line of code and redo/rerun the script for that part.
-    .bind_data  = TRUE
-  ) %>%
-  ungroup() %>%
-  
-  ### Consolidate IDs
-  mutate(id = fct_drop(id))
-
-### Training Data
-data_prepared_tbl <- full_data_tbl %>%
-  filter(!is.na(value))
-
-### Forecast Data
-future_tbl <- full_data_tbl %>%
-  filter(is.na(value))
-
-### step 4
-### Cross-validation forecasting using temperature variables
-
-data_tbl <- atends_temperature_calendar %>%
-  select(id, Date, attendences, average_temperature, min, max) %>%
-  set_names(c("id", "date", "value","temperature", "tempemin", "tempemax"))
-data_tbl
-
-
-### Full = Training + Forecast Datasets
-full_data_tbl <- atends_temperature_calendar %>%
-  select(id, Date, attendences, average_temperature, min, max) %>%
-  set_names(c("id", "date", "value","temperature", "tempemin", "tempemax")) %>%
-  
-  ### Apply Group-wise Time Series Manipulations
-  group_by(id) %>%
-  future_frame(
-    .date_var   = date,
-    .length_out = "7 days",
     .bind_data  = TRUE
   ) %>%
   ungroup() %>%
