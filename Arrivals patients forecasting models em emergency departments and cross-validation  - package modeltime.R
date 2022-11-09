@@ -7,17 +7,7 @@ install.packages("modeltime", dependencies = TRUE)
 remotes::install_github("business-science/modeltime", dependencies = TRUE)
 # Enter one or more numbers, or an empty line to skip updates: 2 # select option 2: CRAN packages only #
 
-### This step serves to allocate all the notebook/computer's RAM memory to Rstudio, this allows notebooks with little RAM to be able to run the scripts of the next steps.
 ### step 2
-### This has worked for me with my 16 RAM, 64Bit Window 11 ----
-if(.Platform$OS.type == "windows") withAutoprint({
-  memory.size() ### Checking your memory size
-  memory.size(TRUE)
-  memory.limit() ## Checking the set limit
-})
-memory.limit(size=56000) ### expanding your memory _ here it goes beyond to your actually memory. This 56000 is proposed for 64Bit.
-
-### step 3
 ### Install and load the following R packages ----
 
 library(keras) 
@@ -67,7 +57,7 @@ library(skimr)
 ### In this step you must import the data from the Excel spreadsheet to Rstudio keeping the original file name "atends_temperature_calendar" so that the next steps work correctly.
 With Rstudio open, in the upper right corner you have the option/tab >import Dataset>from excel>Browse and select the "atends_temperature_calendar"
 
-### step 4
+### step 3
 ### Cross validated forecasting using calendar and meteorologists variables ----
 
 data_tbl <- atends_temperature_calendar %>%
@@ -109,7 +99,7 @@ data_prepared_tbl %>%
   group_by(id) %>%
   tk_summary_diagnostics()
 
-### step 5
+### step 4
 ### Data Splitting ----
 
 ### Now we set aside the future data (we would only need that later when we make forecast)
@@ -149,7 +139,7 @@ summary(prep(recipe_spec))
 recipe_spec %>% prep() %>% juice() %>% glimpse()
 recipe_spec %>% prep() %>% juice()
 
-### step 6
+### step 5
 ### Training of the nine forecast models ----
 
 ### Machine learning models
@@ -243,7 +233,7 @@ wflw_fit_SNAIVE <- workflow() %>%
   add_recipe(recipe_spec) %>%
   fit(training(emergency_tscv$splits[[1]]))
 
-### step 7
+### step 6
 ### Create Modeltime Table ----
 ### The Modeltime Table organizes the models with IDs and creates generic descriptions to help us keep track of our models. 
 ### Let's add the models to a modeltime_table()
@@ -263,7 +253,7 @@ model_tbl <- modeltime_table(
 
 model_tbl
 
-### step 8
+### step 7
 ### Time series cross-validation ---- 3.4 Cross-Validation in Time Series of visits in EDs
 
 resample_results <- model_tbl %>%
